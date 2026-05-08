@@ -5,15 +5,15 @@ import ImportantDisclaimer from "@/components/common/ImportantDisclaimer";
 import FAQAccordion from "@/components/common/FAQAccordion";
 import RelatedLinks from "@/components/common/RelatedLinks";
 import ScannerPageClient from "@/components/scanners/ScannerPageClient";
-import { mockBreakdownSignals } from "@/lib/data/mock-scanner-runs";
+import { getBreakdownScanner } from "@/lib/api";
 
 export const metadata: Metadata = {
   title: "Breakdown Risk Scanner - NSE Bearish Structure Research",
   description: "Track NSE stocks showing support loss, bearish moving-average structure, weak relative strength, and distribution pressure.",
 };
 
-export default function BreakdownsPage() {
-  const rows = mockBreakdownSignals;
+export default async function BreakdownsPage() {
+  const { rows } = await getBreakdownScanner();
   const avgDistribution = rows.reduce((sum, row) => sum + Number(row.metrics.distributionCount ?? 0), 0) / rows.length;
   const avgWeakRs = rows.reduce((sum, row) => sum + (100 - Number(row.metrics.rsRank ?? 0)), 0) / rows.length;
 

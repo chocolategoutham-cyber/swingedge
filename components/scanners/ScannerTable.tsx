@@ -9,8 +9,8 @@ import {
   type SortingState,
   useReactTable,
 } from "@tanstack/react-table";
-import type { ScannerSignal } from "@/lib/types";
-import { getCandles } from "@/lib/data/mock-candles";
+import type { DailyCandle, ScannerSignal } from "@/lib/types";
+import { publicApiBase } from "@/lib/api";
 import ScoreBadge from "@/components/common/ScoreBadge";
 import RiskBadge from "@/components/common/RiskBadge";
 import StockAnalyzeDrawer from "@/components/scanners/StockAnalyzeDrawer";
@@ -24,6 +24,22 @@ export default function ScannerTable({
 }) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [selected, setSelected] = useState<ScannerSignal | null>(null);
+  const [selectedCandles, setSelectedCandles] = useState<DailyCandle[]>([]);
+
+  async function handleAnalyze(signal: ScannerSignal) {
+    setSelected(signal);
+    try {
+      const response = await fetch(`${publicApiBase}/api/stocks/${signal.symbol}`);
+      if (!response.ok) {
+        setSelectedCandles([]);
+        return;
+      }
+      const payload = await response.json();
+      setSelectedCandles(payload.candles ?? []);
+    } catch {
+      setSelectedCandles([]);
+    }
+  }
 
   const columns = useMemo<ColumnDef<ScannerSignal>[]>(
     () => [
@@ -35,7 +51,7 @@ export default function ScannerTable({
         cell: ({ row }) => (
           <button
             className="rounded-full border border-cyan-500/30 bg-cyan-500/10 px-3 py-1.5 text-xs text-cyan-100"
-            onClick={() => setSelected(row.original)}
+            onClick={() => void handleAnalyze(row.original)}
           >
             Analyze
           </button>
@@ -155,9 +171,12 @@ export default function ScannerTable({
       </div>
       <StockAnalyzeDrawer
         signal={selected}
-        candles={selected ? getCandles(selected.symbol) : []}
+        candles={selectedCandles}
         open={Boolean(selected)}
-        onClose={() => setSelected(null)}
+        onClose={() => {
+          setSelected(null);
+          setSelectedCandles([]);
+        }}
       />
     </>
   );

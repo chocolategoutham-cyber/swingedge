@@ -5,15 +5,15 @@ import ImportantDisclaimer from "@/components/common/ImportantDisclaimer";
 import FAQAccordion from "@/components/common/FAQAccordion";
 import RelatedLinks from "@/components/common/RelatedLinks";
 import ScannerPageClient from "@/components/scanners/ScannerPageClient";
-import { mockMomentumSignals } from "@/lib/data/mock-scanner-runs";
+import { getMomentumScanner } from "@/lib/api";
 
 export const metadata: Metadata = {
   title: "Momentum Stocks - Relative Strength Leaders",
   description: "Track stocks persistently outperforming benchmarks with orderly trends and supportive volume.",
 };
 
-export default function MomentumPage() {
-  const rows = mockMomentumSignals;
+export default async function MomentumPage() {
+  const { rows } = await getMomentumScanner();
   return (
     <main>
       <PageHero

@@ -5,15 +5,7 @@ import ImportantDisclaimer from "@/components/common/ImportantDisclaimer";
 import KpiCard from "@/components/common/KpiCard";
 import CandlestickChart from "@/components/charts/CandlestickChart";
 import StockDetailTabs from "@/components/stocks/StockDetailTabs";
-import { mockStocks } from "@/lib/data/mock-stocks";
-import { getCandles } from "@/lib/data/mock-candles";
-import {
-  mockBreakdownSignals,
-  mockBreakoutSignals,
-  mockMomentumSignals,
-  mockPreBreakoutSignals,
-} from "@/lib/data/mock-scanner-runs";
-import { mockProofRecords } from "@/lib/data/mock-proof-records";
+import { getStockDetail } from "@/lib/api";
 
 export async function generateMetadata({
   params,
@@ -33,17 +25,13 @@ export default async function StockDetailPage({
   params: Promise<{ symbol: string }>;
 }) {
   const { symbol } = await params;
-  const stock = mockStocks.find((candidate) => candidate.symbol === symbol);
-  if (!stock) notFound();
-
-  const signals = [
-    ...mockPreBreakoutSignals,
-    ...mockBreakoutSignals,
-    ...mockBreakdownSignals,
-    ...mockMomentumSignals,
-  ].filter((signal) => signal.symbol === symbol);
-  const proof = mockProofRecords.filter((record) => record.symbol === symbol);
-  const candles = getCandles(symbol);
+  let detail;
+  try {
+    detail = await getStockDetail(symbol);
+  } catch {
+    notFound();
+  }
+  const { stock, signals, proof, candles } = detail;
   const latest = candles[candles.length - 1];
   const firstSignal = signals[0];
 

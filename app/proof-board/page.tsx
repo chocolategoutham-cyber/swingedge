@@ -5,27 +5,22 @@ import ImportantDisclaimer from "@/components/common/ImportantDisclaimer";
 import FAQAccordion from "@/components/common/FAQAccordion";
 import PerformanceCharts from "@/components/charts/PerformanceCharts";
 import ProofBoardClient from "@/components/proof/ProofBoardClient";
-import { mockProofRecords } from "@/lib/data/mock-proof-records";
-import {
-  buildProofEquityCurve,
-  calculateProofKpis,
-  calculateProofMonthlyStats,
-  calculateProofReturnDistribution,
-} from "@/lib/scanners/proof";
+import { getProofBoard } from "@/lib/api";
 
 export const metadata: Metadata = {
   title: "Proof Board - Scanner Outcome Tracker",
   description: "Review historical scanner appearances, follow-through, failure cases, and outcome metrics.",
 };
 
-export default function ProofBoardPage() {
-  const kpis = calculateProofKpis(mockProofRecords);
+export default async function ProofBoardPage() {
+  const proofBoard = await getProofBoard();
+  const { kpis } = proofBoard;
   const statusBreakdown = [
-    { name: "Open", value: mockProofRecords.filter((record) => record.status === "Open").length, color: "#3b82f6" },
-    { name: "Target", value: mockProofRecords.filter((record) => ["Target 2 Hit", "Target 1 Hit", "Partial Target"].includes(record.status)).length, color: "#10b981" },
-    { name: "Stop", value: mockProofRecords.filter((record) => record.status === "Stop/Reference Breach").length, color: "#ef4444" },
-    { name: "Expired", value: mockProofRecords.filter((record) => record.status === "Expired").length, color: "#94a3b8" },
-    { name: "Invalidated", value: mockProofRecords.filter((record) => record.status === "Invalidated").length, color: "#f59e0b" },
+    { name: "Open", value: proofBoard.rows.filter((record) => record.status === "Open").length, color: "#3b82f6" },
+    { name: "Target", value: proofBoard.rows.filter((record) => ["Target 2 Hit", "Target 1 Hit", "Partial Target"].includes(record.status)).length, color: "#10b981" },
+    { name: "Stop", value: proofBoard.rows.filter((record) => record.status === "Stop/Reference Breach").length, color: "#ef4444" },
+    { name: "Expired", value: proofBoard.rows.filter((record) => record.status === "Expired").length, color: "#94a3b8" },
+    { name: "Invalidated", value: proofBoard.rows.filter((record) => record.status === "Invalidated").length, color: "#f59e0b" },
   ];
 
   return (
@@ -70,14 +65,14 @@ export default function ProofBoardPage() {
       </section>
       <section className="container pb-10">
         <PerformanceCharts
-          equityCurve={buildProofEquityCurve(mockProofRecords)}
-          monthlyStats={calculateProofMonthlyStats(mockProofRecords)}
-          returnDistribution={calculateProofReturnDistribution(mockProofRecords)}
+          equityCurve={proofBoard.equityCurve}
+          monthlyStats={proofBoard.monthlyStats}
+          returnDistribution={proofBoard.returnDistribution}
           statusBreakdown={statusBreakdown}
         />
       </section>
       <section className="container pb-10">
-        <ProofBoardClient records={mockProofRecords} />
+        <ProofBoardClient records={proofBoard.rows} />
       </section>
       <section className="container space-y-8 pb-10">
         <div className="panel space-y-4 text-sm leading-7 text-slate-300">

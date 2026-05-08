@@ -5,15 +5,15 @@ import ImportantDisclaimer from "@/components/common/ImportantDisclaimer";
 import FAQAccordion from "@/components/common/FAQAccordion";
 import RelatedLinks from "@/components/common/RelatedLinks";
 import ScannerPageClient from "@/components/scanners/ScannerPageClient";
-import { mockPreBreakoutSignals } from "@/lib/data/mock-scanner-runs";
+import { getPreBreakoutScanner } from "@/lib/api";
 
 export const metadata: Metadata = {
   title: "Pre-Breakout Scanner - NSE Base and Compression Research",
   description: "Find NSE stocks forming constructive bases, compression, improving relative strength, and volume dry-up.",
 };
 
-export default function PreBreakoutPage() {
-  const rows = mockPreBreakoutSignals;
+export default async function PreBreakoutPage() {
+  const { rows } = await getPreBreakoutScanner();
   const avgRs = rows.reduce((sum, row) => sum + Number(row.metrics.rsRank ?? 0), 0) / rows.length;
   const avgBase = rows.reduce((sum, row) => sum + Number(row.metrics.baseQuality ?? 0), 0) / rows.length;
 

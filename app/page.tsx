@@ -5,24 +5,24 @@ import PageHero from "@/components/common/PageHero";
 import ImportantDisclaimer from "@/components/common/ImportantDisclaimer";
 import FAQAccordion from "@/components/common/FAQAccordion";
 import RelatedLinks from "@/components/common/RelatedLinks";
-import { mockStocks } from "@/lib/data/mock-stocks";
-import {
-  mockBreakdownSignals,
-  mockBreakoutSignals,
-  mockMomentumSignals,
-  mockPreBreakoutSignals,
-} from "@/lib/data/mock-scanner-runs";
-import { mockNiftyContext } from "@/lib/data/mock-nifty";
-import { buildResearchEngine } from "@/lib/server/research-engine";
+import { getBreakdownScanner, getBreakoutScanner, getInsights, getMeta, getMomentumScanner, getNifty, getPreBreakoutScanner } from "@/lib/api";
 
 export const metadata: Metadata = {
   title: "SignalLens - NSE Swing Research Dashboard",
   description: "NSE swing research, scanners, market breadth, and proof tracking in one educational workspace.",
 };
 
-export default function HomePage() {
-  const engine = buildResearchEngine();
-  const snapshot = mockPreBreakoutSignals.slice(0, 5);
+export default async function HomePage() {
+  const [meta, preBreakout, breakouts, breakdowns, momentum, nifty, insights] = await Promise.all([
+    getMeta(),
+    getPreBreakoutScanner(),
+    getBreakoutScanner(),
+    getBreakdownScanner(),
+    getMomentumScanner(),
+    getNifty(),
+    getInsights(),
+  ]);
+  const snapshot = preBreakout.rows.slice(0, 5);
 
   return (
     <main>
@@ -32,11 +32,11 @@ export default function HomePage() {
         subtitle="SignalLens is an original research dashboard for Indian equity swing traders. Explore constructive bases, momentum breakouts, bearish structure, proof-board transparency, and market breadth context without brokerage or execution features."
         metrics={
           <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
-            <KpiCard label="Universe scanned" value={mockStocks.length} />
-            <KpiCard label="Latest scan time" value="15:42 IST" />
-            <KpiCard label="Active candidates" value={mockPreBreakoutSignals.length + mockBreakoutSignals.length} tone="positive" />
-            <KpiCard label="Market regime" value={mockNiftyContext.label} tone="warning" />
-            <KpiCard label="Breadth score" value={engine.insights.percentAbove20dma} />
+            <KpiCard label="Universe scanned" value={meta.summary.totalUniverse} />
+            <KpiCard label="Latest scan time" value={new Date(meta.generatedAt).toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit" })} />
+            <KpiCard label="Active candidates" value={preBreakout.count + breakouts.count} tone="positive" />
+            <KpiCard label="Market regime" value={nifty.label} tone="warning" />
+            <KpiCard label="Breadth score" value={insights.percentAbove20dma} />
           </div>
         }
       />
@@ -82,10 +82,10 @@ export default function HomePage() {
       <section className="container py-10">
         <ImportantDisclaimer />
         <div className="mt-6 grid gap-4 xl:grid-cols-4">
-          <KpiCard label="Breakout candidates" value={mockBreakoutSignals.length} tone="positive" />
-          <KpiCard label="Bearish flags" value={mockBreakdownSignals.length} tone="risk" />
-          <KpiCard label="Momentum leaders" value={mockMomentumSignals.length} />
-          <KpiCard label="A/D ratio" value={engine.insights.advanceDeclineRatio.toFixed(2)} />
+          <KpiCard label="Breakout candidates" value={breakouts.count} tone="positive" />
+          <KpiCard label="Bearish flags" value={breakdowns.count} tone="risk" />
+          <KpiCard label="Momentum leaders" value={momentum.count} />
+          <KpiCard label="A/D ratio" value={insights.advanceDeclineRatio.toFixed(2)} />
         </div>
       </section>
 

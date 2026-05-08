@@ -5,15 +5,15 @@ import ImportantDisclaimer from "@/components/common/ImportantDisclaimer";
 import FAQAccordion from "@/components/common/FAQAccordion";
 import RelatedLinks from "@/components/common/RelatedLinks";
 import ScannerPageClient from "@/components/scanners/ScannerPageClient";
-import { mockBreakoutSignals } from "@/lib/data/mock-scanner-runs";
+import { getBreakoutScanner } from "@/lib/api";
 
 export const metadata: Metadata = {
   title: "Breakout Scanner - NSE Momentum and Volume Research",
   description: "Track NSE stocks with confirmed breakout, continuation, high-tight-flag, and momentum patterns.",
 };
 
-export default function BreakoutsPage() {
-  const rows = mockBreakoutSignals;
+export default async function BreakoutsPage() {
+  const { rows } = await getBreakoutScanner();
   const avgVolumeRatio = rows.reduce((sum, row) => sum + Number(row.metrics.volumeRatio ?? 0), 0) / rows.length;
 
   return (

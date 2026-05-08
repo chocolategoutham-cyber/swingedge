@@ -5,15 +5,15 @@ import ImportantDisclaimer from "@/components/common/ImportantDisclaimer";
 import RelatedLinks from "@/components/common/RelatedLinks";
 import SectorHeatmap from "@/components/insights/SectorHeatmap";
 import BreadthPanel from "@/components/insights/BreadthPanel";
-import { buildResearchEngine } from "@/lib/server/research-engine";
+import { getInsights } from "@/lib/api";
 
 export const metadata: Metadata = {
   title: "NSE Market Insights - Sector Rotation and Breadth",
   description: "Sector rotation, breadth, and relative strength summaries to pair with scanner research.",
 };
 
-export default function InsightsPage() {
-  const insights = buildResearchEngine().insights;
+export default async function InsightsPage() {
+  const insights = await getInsights();
   const sectors = insights.sectors;
 
   return (
