@@ -1,6 +1,8 @@
 const path = window.location.pathname.replace(/\/$/, "");
 const segments = path.split("/").filter(Boolean);
+const pageRoutes = new Set(["scaner-wins", "pre-breakout", "breakouts", "breakdowns", "insights", "how-we-scan-stocks"]);
 const current = segments.at(-1) || "scaner-wins";
+const repoBasePath = segments.length > 1 && !pageRoutes.has(segments[0]) ? `/${segments[0]}` : "";
 
 document.querySelectorAll("[data-route]").forEach((link) => {
   const route = link.getAttribute("data-route");
@@ -28,12 +30,26 @@ function pillClass(value) {
   return "blue";
 }
 
+function resolveApiPath(apiPath) {
+  const config = window.SWINGEDGE_CONFIG || {};
+  const staticMode = config.apiMode === "static" || window.location.hostname.endsWith("github.io");
+  const staticBasePath = config.apiBasePath || `${repoBasePath}/api`;
+  const dynamicBasePath = config.apiBasePath || "";
+
+  if (staticMode) {
+    const fileName = apiPath.replace(/^\/api\//, "");
+    return `${staticBasePath}/${fileName}.json`;
+  }
+
+  return `${dynamicBasePath}${apiPath}`;
+}
+
 async function hydrateTable(apiPath, renderer) {
   const mount = document.querySelector(`[data-api-table="${apiPath}"]`);
   if (!mount) return;
 
   try {
-    const response = await fetch(apiPath);
+    const response = await fetch(resolveApiPath(apiPath));
     if (!response.ok) {
       throw new Error(`Request failed: ${response.status}`);
     }

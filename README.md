@@ -1,6 +1,6 @@
 # Swing Edge Replica Frontend
 
-This project is a full-stack multi-page replica inspired by `https://www.swingedge.info/`.
+This repository is the public frontend for a Swing Edge style screener.
 
 ## Pages
 
@@ -14,31 +14,25 @@ This project is a full-stack multi-page replica inspired by `https://www.swinged
 ## Notes
 
 - The design and content structure are based on publicly visible pages.
-- The original site’s private scanner formulas, rankings, and backend jobs are not included.
-- This version includes a lightweight Node backend with JSON APIs.
-- The backend logic is inferred from the public methodology page and implemented as a transparent heuristic rules engine.
+- The public GitHub Pages site reads from static JSON snapshots stored in `/api`.
+- The private screener backend is kept out of this repo and can live in a separate private repository.
 
-## Backend logic
+## GitHub Pages
 
-The backend uses the public concepts disclosed on the reference site:
+This repo includes:
 
-- liquidity-aware universe filtering
-- stage and trend alignment
-- relative strength
-- breakout proximity
-- volume dry-up and breakout participation
-- failure-risk and bearish structure checks
+- `.github/workflows/deploy-pages.yml`
+- `.nojekyll`
+- static API snapshots in `/api`
 
-These are implemented in:
+Pushing to `main` deploys the static site through GitHub Actions once Pages is enabled for the repository.
 
-- `lib/analyzer.js`
-- `data/market-universe.js`
-- `data/site-data.js`
+## Private server
 
-## Run
+A separate local package is prepared under `server-private/` for the private screener server repo. That package is git-ignored here so it does not get published with the frontend.
 
-```bash
-node server.js
-```
+The private server contains:
 
-Then open `http://localhost:3000`.
+- the Node API layer
+- the methodology-driven analyzer
+- the sample market universe and scoring logic
