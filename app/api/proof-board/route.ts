@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { mockProofRecords } from "@/lib/data/mock-proof-records";
+import { buildResearchEngine } from "@/lib/server/research-engine";
 import {
   buildProofEquityCurve,
   calculateProofKpis,
@@ -8,12 +8,13 @@ import {
 } from "@/lib/scanners/proof";
 
 export async function GET() {
+  const records = buildResearchEngine().scanners.proof;
   return NextResponse.json({
-    count: mockProofRecords.length,
-    kpis: calculateProofKpis(mockProofRecords),
-    equityCurve: buildProofEquityCurve(mockProofRecords),
-    monthlyStats: calculateProofMonthlyStats(mockProofRecords),
-    returnDistribution: calculateProofReturnDistribution(mockProofRecords),
-    rows: mockProofRecords,
+    count: records.length,
+    kpis: calculateProofKpis(records),
+    equityCurve: buildProofEquityCurve(records),
+    monthlyStats: calculateProofMonthlyStats(records),
+    returnDistribution: calculateProofReturnDistribution(records),
+    rows: records,
   });
 }

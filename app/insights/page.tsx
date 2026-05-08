@@ -5,8 +5,7 @@ import ImportantDisclaimer from "@/components/common/ImportantDisclaimer";
 import RelatedLinks from "@/components/common/RelatedLinks";
 import SectorHeatmap from "@/components/insights/SectorHeatmap";
 import BreadthPanel from "@/components/insights/BreadthPanel";
-import { mockMarketInsights } from "@/lib/data/mock-market-insights";
-import { calculateSectorRotation } from "@/lib/scanners/insights";
+import { buildResearchEngine } from "@/lib/server/research-engine";
 
 export const metadata: Metadata = {
   title: "NSE Market Insights - Sector Rotation and Breadth",
@@ -14,7 +13,8 @@ export const metadata: Metadata = {
 };
 
 export default function InsightsPage() {
-  const sectors = calculateSectorRotation();
+  const insights = buildResearchEngine().insights;
+  const sectors = insights.sectors;
 
   return (
     <main>
@@ -28,12 +28,12 @@ export default function InsightsPage() {
       </section>
       <section className="container pb-10">
         <div className="grid gap-4 md:grid-cols-3 xl:grid-cols-6">
-          <KpiCard label="Market pulse" value={mockMarketInsights.marketPulse} />
-          <KpiCard label="Breadth gauge" value={mockMarketInsights.breadthLabel} />
+          <KpiCard label="Market pulse" value={insights.marketPulse} />
+          <KpiCard label="Breadth gauge" value={insights.breadthLabel} />
           <KpiCard label="Sector leadership" value={sectors[0].sector} tone="positive" />
-          <KpiCard label="Risk regime" value={mockMarketInsights.riskRegime} tone="warning" />
-          <KpiCard label="New highs / lows" value={`${mockMarketInsights.newHighs}/${mockMarketInsights.newLows}`} />
-          <KpiCard label="A/D ratio" value={mockMarketInsights.advanceDeclineRatio.toFixed(2)} />
+          <KpiCard label="Risk regime" value={insights.riskRegime} tone="warning" />
+          <KpiCard label="New highs / lows" value={`${insights.newHighs}/${insights.newLows}`} />
+          <KpiCard label="A/D ratio" value={insights.advanceDeclineRatio.toFixed(2)} />
         </div>
       </section>
       <section className="container pb-10">
@@ -50,13 +50,13 @@ export default function InsightsPage() {
       </section>
       <section className="container pb-10">
         <BreadthPanel
-          advancers={mockMarketInsights.advancers}
-          decliners={mockMarketInsights.decliners}
-          unchanged={mockMarketInsights.unchanged}
-          ratio={mockMarketInsights.advanceDeclineRatio}
-          above20={mockMarketInsights.percentAbove20dma}
-          above50={mockMarketInsights.percentAbove50dma}
-          above200={mockMarketInsights.percentAbove200dma}
+          advancers={insights.advancers}
+          decliners={insights.decliners}
+          unchanged={insights.unchanged}
+          ratio={insights.advanceDeclineRatio}
+          above20={insights.percentAbove20dma}
+          above50={insights.percentAbove50dma}
+          above200={insights.percentAbove200dma}
         />
       </section>
       <section className="container pb-10">

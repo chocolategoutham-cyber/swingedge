@@ -13,7 +13,7 @@ import {
   mockPreBreakoutSignals,
 } from "@/lib/data/mock-scanner-runs";
 import { mockNiftyContext } from "@/lib/data/mock-nifty";
-import { mockMarketInsights } from "@/lib/data/mock-market-insights";
+import { buildResearchEngine } from "@/lib/server/research-engine";
 
 export const metadata: Metadata = {
   title: "SignalLens - NSE Swing Research Dashboard",
@@ -21,6 +21,7 @@ export const metadata: Metadata = {
 };
 
 export default function HomePage() {
+  const engine = buildResearchEngine();
   const snapshot = mockPreBreakoutSignals.slice(0, 5);
 
   return (
@@ -35,7 +36,7 @@ export default function HomePage() {
             <KpiCard label="Latest scan time" value="15:42 IST" />
             <KpiCard label="Active candidates" value={mockPreBreakoutSignals.length + mockBreakoutSignals.length} tone="positive" />
             <KpiCard label="Market regime" value={mockNiftyContext.label} tone="warning" />
-            <KpiCard label="Breadth score" value={mockNiftyContext.breadthScore} />
+            <KpiCard label="Breadth score" value={engine.insights.percentAbove20dma} />
           </div>
         }
       />
@@ -84,7 +85,7 @@ export default function HomePage() {
           <KpiCard label="Breakout candidates" value={mockBreakoutSignals.length} tone="positive" />
           <KpiCard label="Bearish flags" value={mockBreakdownSignals.length} tone="risk" />
           <KpiCard label="Momentum leaders" value={mockMomentumSignals.length} />
-          <KpiCard label="A/D ratio" value={mockMarketInsights.advanceDeclineRatio.toFixed(2)} />
+          <KpiCard label="A/D ratio" value={engine.insights.advanceDeclineRatio.toFixed(2)} />
         </div>
       </section>
 

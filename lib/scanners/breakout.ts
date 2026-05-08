@@ -44,15 +44,15 @@ export function calculateBreakoutScore(parts: {
   );
 }
 
-export function scanBreakouts() {
+export function scanBreakouts(universe = mockStocks) {
   const relativeReturnMap = Object.fromEntries(
-    mockStocks.map((stock) => {
+    universe.map((stock) => {
       const candles = getCandles(stock.symbol);
       return [stock.symbol, percentReturn(candles[candles.length - 60].close, candles[candles.length - 1].close)];
     })
   );
 
-  return mockStocks
+  return universe
     .map((stock, index) => {
       const candles = getCandles(stock.symbol);
       const latest = candles[candles.length - 1];

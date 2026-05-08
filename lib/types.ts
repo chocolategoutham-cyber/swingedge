@@ -56,6 +56,12 @@ export const sectorTrendSchema = z.enum([
   "Weakening",
 ]);
 
+export const universeSleeveSchema = z.enum([
+  "Nifty 500",
+  "Nifty SmallCap 250",
+  "Nifty MicroCap 250",
+]);
+
 export const evidenceRuleSchema = z.object({
   id: z.string(),
   label: z.string(),
@@ -224,6 +230,49 @@ export const stockDetailSnapshotSchema = z.object({
   distanceFromSupport: z.number(),
 });
 
+export const marketUniverseProfileSchema = z.object({
+  symbol: z.string(),
+  companyName: z.string(),
+  sleeve: universeSleeveSchema,
+  averageDailyTradedValue20: z.number(),
+  averageVolume20d: z.number(),
+  staleSessions20d: z.number(),
+  participationScore: z.number(),
+  liquidityScore: z.number(),
+  passesLiquidity: z.boolean(),
+  passesFreshness: z.boolean(),
+  isEligible: z.boolean(),
+  exclusionReason: z.string().nullable(),
+});
+
+export const methodologyOverviewSchema = z.object({
+  universe: z.object({
+    venue: z.literal("NSE"),
+    sleeves: z.array(universeSleeveSchema),
+    notes: z.array(z.string()),
+  }),
+  principles: z.array(z.string()),
+  scannerVocabulary: z.array(z.string()),
+  updateCadence: z.array(z.string()),
+  disclaimer: z.string(),
+});
+
+export const scanEngineSummarySchema = z.object({
+  generatedAt: z.string(),
+  totalUniverse: z.number(),
+  eligibleUniverse: z.number(),
+  excludedUniverse: z.number(),
+  sleeveCounts: z.record(z.number()),
+  scannerCounts: z.object({
+    preBreakout: z.number(),
+    breakout: z.number(),
+    breakdown: z.number(),
+    momentum: z.number(),
+    proof: z.number(),
+  }),
+  methodologyNote: z.string(),
+});
+
 export type Stock = z.infer<typeof stockSchema>;
 export type DailyCandle = z.infer<typeof dailyCandleSchema>;
 export type EvidenceRule = z.infer<typeof evidenceRuleSchema>;
@@ -234,6 +283,10 @@ export type NiftyContext = z.infer<typeof niftyContextSchema>;
 export type SectorSnapshot = z.infer<typeof sectorSnapshotSchema>;
 export type MarketInsights = z.infer<typeof marketInsightsSchema>;
 export type StockDetailSnapshot = z.infer<typeof stockDetailSnapshotSchema>;
+export type MarketUniverseProfile = z.infer<typeof marketUniverseProfileSchema>;
+export type MethodologyOverview = z.infer<typeof methodologyOverviewSchema>;
+export type ScanEngineSummary = z.infer<typeof scanEngineSummarySchema>;
+export type UniverseSleeve = z.infer<typeof universeSleeveSchema>;
 
 export type ScannerFilters = {
   search: string;

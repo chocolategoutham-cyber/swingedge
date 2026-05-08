@@ -2,5 +2,6 @@ import { NextResponse } from "next/server";
 import { buildResearchEngine } from "@/lib/server/research-engine";
 
 export async function GET() {
-  return NextResponse.json(buildResearchEngine().insights);
+  const engine = buildResearchEngine();
+  return NextResponse.json(engine.methodology);
 }

@@ -90,9 +90,9 @@ export function calculatePreBreakoutScore(parts: {
   );
 }
 
-export function scanPreBreakouts() {
+export function scanPreBreakouts(universe = mockStocks) {
   const relativeReturnMap = Object.fromEntries(
-    mockStocks.map((stock) => {
+    universe.map((stock) => {
       const candles = getCandles(stock.symbol);
       return [
         stock.symbol,
@@ -101,7 +101,7 @@ export function scanPreBreakouts() {
     })
   );
 
-  return mockStocks
+  return universe
     .map((stock, index) => {
       const candles = getCandles(stock.symbol);
       const closes = candles.map((candle) => candle.close);

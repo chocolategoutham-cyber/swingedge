@@ -1,4 +1,13 @@
 export const scannerThresholds = {
+  universe: {
+    minAverageDailyValue20: {
+      "Nifty 500": 2.2e8,
+      "Nifty SmallCap 250": 1.25e8,
+      "Nifty MicroCap 250": 5.5e7,
+    },
+    minParticipationScore: 45,
+    maxStaleSessions20d: 3,
+  },
   preBreakout: {
     veryStrong: 80,
     strong: 65,

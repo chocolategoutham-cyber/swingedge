@@ -4,9 +4,8 @@ import { buildResearchEngine } from "@/lib/server/research-engine";
 export async function GET() {
   const engine = buildResearchEngine();
   return NextResponse.json({
-    scanner: "pre-breakout",
-    count: engine.scanners.preBreakout.length,
-    universe: engine.summary.eligibleUniverse,
-    rows: engine.scanners.preBreakout,
+    generatedAt: engine.generatedAt,
+    summary: engine.summary,
+    rows: engine.profiles,
   });
 }

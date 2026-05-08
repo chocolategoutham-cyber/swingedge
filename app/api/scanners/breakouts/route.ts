@@ -1,10 +1,12 @@
 import { NextResponse } from "next/server";
-import { mockBreakoutSignals } from "@/lib/data/mock-scanner-runs";
+import { buildResearchEngine } from "@/lib/server/research-engine";
 
 export async function GET() {
+  const engine = buildResearchEngine();
   return NextResponse.json({
     scanner: "breakout",
-    count: mockBreakoutSignals.length,
-    rows: mockBreakoutSignals,
+    count: engine.scanners.breakouts.length,
+    universe: engine.summary.eligibleUniverse,
+    rows: engine.scanners.breakouts,
   });
 }

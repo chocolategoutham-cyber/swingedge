@@ -1,13 +1,7 @@
 import { NextResponse } from "next/server";
 import { mockStocks } from "@/lib/data/mock-stocks";
 import { getCandles } from "@/lib/data/mock-candles";
-import {
-  mockBreakdownSignals,
-  mockBreakoutSignals,
-  mockMomentumSignals,
-  mockPreBreakoutSignals,
-} from "@/lib/data/mock-scanner-runs";
-import { mockProofRecords } from "@/lib/data/mock-proof-records";
+import { buildResearchEngine } from "@/lib/server/research-engine";
 
 export async function GET(
   _request: Request,
@@ -20,14 +14,15 @@ export async function GET(
     return NextResponse.json({ error: "Stock not found" }, { status: 404 });
   }
 
+  const engine = buildResearchEngine();
   const signals = [
-    ...mockPreBreakoutSignals,
-    ...mockBreakoutSignals,
-    ...mockBreakdownSignals,
-    ...mockMomentumSignals,
+    ...engine.scanners.preBreakout,
+    ...engine.scanners.breakouts,
+    ...engine.scanners.breakdowns,
+    ...engine.scanners.momentum,
   ].filter((signal) => signal.symbol === symbol);
 
-  const proof = mockProofRecords.filter((record) => record.symbol === symbol);
+  const proof = engine.scanners.proof.filter((record) => record.symbol === symbol);
   const candles = getCandles(symbol);
 
   return NextResponse.json({

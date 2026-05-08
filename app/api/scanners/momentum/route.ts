@@ -1,10 +1,12 @@
 import { NextResponse } from "next/server";
-import { mockMomentumSignals } from "@/lib/data/mock-scanner-runs";
+import { buildResearchEngine } from "@/lib/server/research-engine";
 
 export async function GET() {
+  const engine = buildResearchEngine();
   return NextResponse.json({
     scanner: "momentum",
-    count: mockMomentumSignals.length,
-    rows: mockMomentumSignals,
+    count: engine.scanners.momentum.length,
+    universe: engine.summary.eligibleUniverse,
+    rows: engine.scanners.momentum,
   });
 }
