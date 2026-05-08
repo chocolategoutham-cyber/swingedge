@@ -32,7 +32,9 @@ function pillClass(value) {
 
 function resolveApiPath(apiPath) {
   const config = window.SWINGEDGE_CONFIG || {};
-  const staticMode = config.apiMode === "static" || window.location.hostname.endsWith("github.io");
+  const staticMode =
+    config.apiMode === "static" ||
+    (typeof config.apiMode === "undefined" && window.location.hostname.endsWith("github.io"));
   const staticBasePath = config.apiBasePath || `${repoBasePath}/api`;
   const dynamicBasePath = config.apiBasePath || "";
 
