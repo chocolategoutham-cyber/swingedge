@@ -11,9 +11,9 @@ import { mockProofRecords } from "@/lib/data/mock-proof-records";
 
 export async function GET(
   _request: Request,
-  { params }: { params: { symbol: string } }
+  { params }: { params: Promise<{ symbol: string }> }
 ) {
-  const { symbol } = params;
+  const { symbol } = await params;
   const stock = mockStocks.find((candidate) => candidate.symbol === symbol);
 
   if (!stock) {

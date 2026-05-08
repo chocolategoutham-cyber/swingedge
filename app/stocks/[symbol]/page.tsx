@@ -18,9 +18,9 @@ import { mockProofRecords } from "@/lib/data/mock-proof-records";
 export async function generateMetadata({
   params,
 }: {
-  params: { symbol: string };
+  params: Promise<{ symbol: string }>;
 }): Promise<Metadata> {
-  const { symbol } = params;
+  const { symbol } = await params;
   return {
     title: `${symbol} - Stock Research Detail`,
     description: `Scanner appearances, chart context, indicators, and proof history for ${symbol}.`,
@@ -30,9 +30,9 @@ export async function generateMetadata({
 export default async function StockDetailPage({
   params,
 }: {
-  params: { symbol: string };
+  params: Promise<{ symbol: string }>;
 }) {
-  const { symbol } = params;
+  const { symbol } = await params;
   const stock = mockStocks.find((candidate) => candidate.symbol === symbol);
   if (!stock) notFound();
 
