@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>How We Scan Stocks | Swing Edge Replica</title>
+    <link rel="stylesheet" href="../assets/styles.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="shell topbar-inner">
+        <a class="brand" href="../scaner-wins/"><span class="brand-mark">SE</span><span>Swing Edge</span></a>
+        <nav class="primary-nav">
+          <a class="nav-link" data-route="scaner-wins" href="../scaner-wins/">Screener</a>
+          <a class="nav-link" data-route="insights" href="../insights/">Insights</a>
+          <a class="nav-link" data-route="how-we-scan-stocks" href="../how-we-scan-stocks/">Learn</a>
+        </nav>
+      </div>
+    </header>
+
+    <main class="shell">
+      <section class="hero">
+        <div class="hero-grid">
+          <div class="hero-panel">
+            <span class="eyebrow">Methodology</span>
+            <h1>How we scan stocks</h1>
+            <p class="lead">This page explains the market universe, public technical vocabulary, and risk boundaries behind the scanners while keeping exact formulas, thresholds, and weighting proprietary.</p>
+          </div>
+          <div class="panel">
+            <div class="label">Principles</div>
+            <div class="method-grid">
+              <div class="method-item"><h3>Research candidates, not calls</h3><p>Scanner rows are research leads. They are not buy, sell, hold, short, or portfolio recommendations.</p></div>
+              <div class="method-item"><h3>Multiple clues, not one indicator</h3><p>Setups are described using structure, trend context, participation, and risk language instead of a single magic signal.</p></div>
+              <div class="method-item"><h3>Process stays protected</h3><p>Definitions are public for clarity; the recipe, weights, thresholds, and ranking rules are not published.</p></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="panel">
+          <div class="label">A · Market Universe</div>
+          <h2>What we scan and what we deliberately exclude</h2>
+          <p>Swing Edge is built around a single listed cash-equity venue for reproducible data and clean benchmarking. The research universe is assembled from NSE-listed constituents of Nifty 500, Nifty SmallCap 250, and Nifty MicroCap 250, merged and de-duplicated.</p>
+          <p>Liquidity-aware gates are applied using participation proxies such as average traded value bands. Exact cutoffs remain proprietary, but the goal is conservative: prefer structures that are easier to observe, backtest, and risk-manage.</p>
+          <p>Coverage is not limited to F&amp;O listings. If a trader wants only derivatives-eligible names, that check belongs in their own workflow.</p>
+        </div>
+      </section>
+
+      <section class="section grid-2">
+        <article class="panel">
+          <div class="label">B · Technical Logic</div>
+          <h2>How the site talks about price structure</h2>
+          <p>The scanners synthesize structure, trend context, participation, and proximity. Public definitions are shared for clarity while exact windows and thresholds stay private.</p>
+          <div class="divider"></div>
+          <div class="method-grid">
+            <div class="method-item"><h3>Consolidation</h3><p>A phase where price respects overlapping support and resistance rather than trend-extending.</p></div>
+            <div class="method-item"><h3>VCP-like contraction</h3><p>Tighter swings and smaller pullbacks as a base ages, described in public terms without disclosing exact counting rules.</p></div>
+            <div class="method-item"><h3>Relative strength</h3><p>A way to compare how a stock behaves versus a broad benchmark or peer context.</p></div>
+            <div class="method-item"><h3>Breakout proximity</h3><p>How close price sits to a well-defined pivot or supply shelf where resolution may occur.</p></div>
+          </div>
+        </article>
+        <article class="panel">
+          <div class="label">Terms on Swing Edge</div>
+          <h2>Public vocabulary, not implementation details</h2>
+          <div class="method-grid">
+            <div class="method-item"><h3>Price structure</h3><p>Bases, pivots, pullbacks, higher lows, lower highs, and support/resistance areas.</p></div>
+            <div class="method-item"><h3>Volume-price behavior</h3><p>How trading activity behaves around important price zones. Strong moves usually need participation, not only price movement.</p></div>
+            <div class="method-item"><h3>Trend alignment</h3><p>Whether a stock appears to be moving with or against its broader trend context.</p></div>
+            <div class="method-item"><h3>Failure risk</h3><p>Warning signs like false breakouts, overhead supply, weak closes, or support loss.</p></div>
+          </div>
+        </article>
+      </section>
+
+      <section class="section">
+        <div class="panel">
+          <div class="label">Scanner Types</div>
+          <h2>Pre-Breakout, Breakout, and Bearish Setup</h2>
+          <p>Pre-Breakout rows gather stocks near potential resolution zones. Breakout rows list names that have already cleared breakout-style levels and now need follow-through review. Bearish Setup rows describe downside structure, support loss, or distribution risk.</p>
+          <p>Core scanner pages refresh when updated market data and system jobs are available. Context pages can refresh more often when supporting market data is available.</p>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="panel">
+          <div class="label">C · Risk Disclaimer</div>
+          <h2>Balanced expectations</h2>
+          <ul class="note-list">
+            <li>No scanner guarantees success. A high score or attractive label only means the historical pattern matched research rules at that moment.</li>
+            <li>False signals and failed breakouts are normal. Whipsaws, gaps, news shocks, and correlations can invalidate textbook-looking setups.</li>
+            <li>Risk boundaries still matter. Stops do not eliminate gap risk, but trading without an invalidation level turns research into denial-of-loss behavior.</li>
+            <li>Scanner scores and labels are not buy, sell, or hold recommendations, and past “wins” do not guarantee future results.</li>
+          </ul>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="shell footer-grid">
+        <section class="footer-panel">
+          <h3>Related pages</h3>
+          <div class="footer-links">
+            <a class="mini-link" href="../pre-breakout/">Pre-Breakout</a>
+            <a class="mini-link" href="../breakouts/">Breakouts</a>
+            <a class="mini-link" href="../breakdowns/">Bearish</a>
+            <a class="mini-link" href="../insights/">Insights</a>
+          </div>
+        </section>
+        <section class="footer-panel">
+          <h3>About this source code</h3>
+          <p>This is a handcrafted frontend source recreation based on public pages and visible site structure. The original private scanner engine and formulas are not included.</p>
+        </section>
+      </div>
+    </footer>
+
+    <script src="../assets/app.js"></script>
+  </body>
+</html>

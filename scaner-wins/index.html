@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Scanner Wins This Week | Swing Edge Replica</title>
+    <link rel="stylesheet" href="../assets/styles.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="shell topbar-inner">
+        <a class="brand" href="../scaner-wins/">
+          <span class="brand-mark">SE</span>
+          <span>Swing Edge</span>
+        </a>
+        <nav class="primary-nav">
+          <a class="nav-link" data-route="scaner-wins" href="../scaner-wins/">Screener</a>
+          <a class="nav-link" data-route="insights" href="../insights/">Insights</a>
+          <a class="nav-link" data-route="how-we-scan-stocks" href="../how-we-scan-stocks/">Learn</a>
+        </nav>
+        <nav class="utility-nav">
+          <a class="cta-link" href="../pre-breakout/">Open Pre-Breakout</a>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero">
+        <div class="shell hero-grid">
+          <div class="hero-panel">
+            <span class="eyebrow">Scanner Wins</span>
+            <h1>Stocks the scanner identified before the move.</h1>
+            <p class="lead">
+              A replica-style frontend inspired by Swing Edge’s weekly proof board. It keeps the same dark dashboard language, research framing, and multi-page navigation structure.
+            </p>
+            <div class="hero-actions">
+              <a class="btn btn-primary" href="../pre-breakout/">Explore Pre-Breakout</a>
+              <a class="btn btn-secondary" href="../how-we-scan-stocks/">Read Methodology</a>
+            </div>
+          </div>
+          <div class="metric-stack">
+            <article class="metric">
+              <span class="muted">Last updated</span>
+              <strong>2026-05-07</strong>
+              <span>Window: 2026-05-01 to 2026-05-07</span>
+            </article>
+            <article class="metric">
+              <span class="muted">Top move</span>
+              <strong>+39.3%</strong>
+              <span>Pre-Breakout: DBREALTY</span>
+            </article>
+            <article class="metric">
+              <span class="muted">Coverage focus</span>
+              <strong>10</strong>
+              <span>Highest movers from the selected scanner window</span>
+            </article>
+            <article class="metric">
+              <span class="muted">Research stance</span>
+              <strong>Data only</strong>
+              <span>No buy, sell, or hold instructions</span>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="shell tab-strip">
+        <nav class="tab-nav">
+          <a class="tab-link" data-route="pre-breakout" href="../pre-breakout/">Pre-Breakout Stocks</a>
+          <a class="tab-link" data-route="breakouts" href="../breakouts/">Breakout Stocks</a>
+          <a class="tab-link" data-route="breakdowns" href="../breakdowns/">Bearish Setups</a>
+          <a class="tab-link active" data-route="scaner-wins" href="../scaner-wins/">Scanner Wins</a>
+          <a class="tab-link" data-route="insights" href="../insights/">Insights</a>
+        </nav>
+      </section>
+
+      <section class="section">
+        <div class="shell">
+          <div class="section-head">
+            <div>
+              <div class="label">Top 10</div>
+              <h2>Scanner wins this week</h2>
+              <p>Ranked by strongest move after appearing in the scanner.</p>
+            </div>
+          </div>
+          <div class="wins-grid">
+            <article class="win-card"><span class="muted">#1 DBREALTY</span><strong>+39.3%</strong><p>Valor Estate Ltd.</p></article>
+            <article class="win-card"><span class="muted">#2 GRWRHITECH</span><strong>+39.0%</strong><p>Garware Hi-Tech Films Ltd.</p></article>
+            <article class="win-card"><span class="muted">#3 TEJASNET</span><strong>+33.7%</strong><p>Tejas Networks Ltd.</p></article>
+            <article class="win-card"><span class="muted">#4 CARTRADE</span><strong>+30.3%</strong><p>Cartrade Tech Ltd.</p></article>
+            <article class="win-card"><span class="muted">#5 GODREJIND</span><strong>+27.9%</strong><p>Godrej Industries Ltd.</p></article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="shell table-panel">
+          <div class="section-head">
+            <div>
+              <div class="label">Proof Board</div>
+              <h2>Weekly movers</h2>
+            </div>
+          </div>
+          <table>
+            <thead>
+              <tr>
+                <th>Win</th>
+                <th>Stock</th>
+                <th>Identified By</th>
+                <th>Identified On</th>
+                <th>Price Then</th>
+                <th>Best Price</th>
+                <th>Moved</th>
+              </tr>
+            </thead>
+            <tbody data-api-table="/api/scanner-wins">
+              <tr><td colspan="7">Loading scanner wins…</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="shell card-grid">
+          <article class="info-card">
+            <div class="label">Why it exists</div>
+            <h3>Transparency over hindsight</h3>
+            <p>The proof board shows when a symbol first appeared so the site can explain scanner timing without turning the page into a promise of future returns.</p>
+          </article>
+          <article class="info-card">
+            <div class="label">Research framing</div>
+            <h3>Signals are not instructions</h3>
+            <p>Just like the reference site, this replica keeps strong risk language around every dataset so the interface feels realistic and trustworthy.</p>
+          </article>
+          <article class="info-card">
+            <div class="label">Source code</div>
+            <h3>Frontend-ready pages</h3>
+            <p>You can extend these screens into a dynamic product later by swapping the hardcoded cards and tables for live API data.</p>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="shell footer-grid">
+        <section class="footer-panel">
+          <h3>Important disclaimer</h3>
+          <p>About Swing Edge: a free market research platform for swing traders, covering pre-breakout setups, breakout momentum, bearish risk screens, Nifty signals and market insights in one place.</p>
+          <p>Swing Edge is a technical analysis and screening tool only. Views, scores, signals, and indicators shown here are automated outputs based on historical and market data; they are not investment advice, financial advice, trading advice, or a recommendation to buy, sell, or hold any security.</p>
+        </section>
+        <section class="footer-panel">
+          <h3>Links</h3>
+          <div class="footer-links">
+            <a class="mini-link" href="../how-we-scan-stocks/">How We Scan</a>
+            <a class="mini-link" href="../pre-breakout/">Pre-Breakout</a>
+            <a class="mini-link" href="../breakouts/">Breakouts</a>
+            <a class="mini-link" href="../breakdowns/">Bearish</a>
+            <a class="mini-link" href="../insights/">Insights</a>
+          </div>
+          <p class="muted small">© <span data-year></span> Swing Edge Replica. Built as a frontend source version.</p>
+        </section>
+      </div>
+    </footer>
+
+    <script src="../assets/app.js"></script>
+  </body>
+</html>
