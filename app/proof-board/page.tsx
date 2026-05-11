@@ -15,6 +15,10 @@ export const metadata: Metadata = {
 export default async function ProofBoardPage() {
   const proofBoard = await getProofBoard();
   const { kpis } = proofBoard;
+  const topFollowThrough = [...proofBoard.rows]
+    .filter((record) => record.returnPct > 0)
+    .sort((left, right) => right.returnPct - left.returnPct)
+    .slice(0, 5);
   const statusBreakdown = [
     { name: "Open", value: proofBoard.rows.filter((record) => record.status === "Open").length, color: "#3b82f6" },
     { name: "Target", value: proofBoard.rows.filter((record) => ["Target 2 Hit", "Target 1 Hit", "Partial Target"].includes(record.status)).length, color: "#10b981" },
@@ -61,6 +65,28 @@ export default async function ProofBoardPage() {
           <KpiCard label="Expired count" value={kpis.expiredCount} />
           <KpiCard label="Best outcome" value={`${kpis.bestOutcome}%`} tone="positive" />
           <KpiCard label="Worst outcome" value={`${kpis.worstOutcome}%`} tone="risk" />
+        </div>
+      </section>
+      <section className="container pb-10">
+        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-5">
+          {topFollowThrough.map((record, index) => (
+            <div key={record.id} className="panel">
+              <p className="text-xs uppercase tracking-[0.22em] text-cyan-300">
+                Win #{index + 1}
+              </p>
+              <p className="mt-3 text-2xl font-black text-emerald-300">
+                +{record.returnPct.toFixed(1)}%
+              </p>
+              <p className="mt-2 font-semibold text-white">{record.symbol}</p>
+              <p className="text-xs text-slate-400">{record.companyName}</p>
+              <p className="mt-3 text-xs text-slate-500">
+                Identified by {record.scannerSource} on {record.firstSeenDate}
+              </p>
+              <p className="mt-1 text-xs text-slate-400">
+                {record.entryReference.toFixed(2)} to {(record.exitPrice ?? record.currentPrice).toFixed(2)}
+              </p>
+            </div>
+          ))}
         </div>
       </section>
       <section className="container pb-10">
