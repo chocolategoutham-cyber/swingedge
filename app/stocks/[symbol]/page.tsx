@@ -16,7 +16,6 @@ import {
   getPreBreakoutScanner,
   getStockDetail,
 } from "@/lib/api";
-import type { ProofRecord, ScannerSignal } from "@/lib/types";
 
 export async function generateMetadata({
   params,
@@ -26,54 +25,18 @@ export async function generateMetadata({
   const { symbol } = await params;
   return {
     title: `${symbol} - Stock Research Detail`,
-    description: `Scanner appearances, chart context, indicators, and proof history for ${symbol}.`,
+    description: `Scanner appearances, chart context, indicator lens, and proof history for ${symbol}.`,
   };
-}
-
-function signalPriority(signal: ScannerSignal) {
-  if (signal.scannerType === "breakout") return 4;
-  if (signal.scannerType === "pre-breakout") return 3;
-  if (signal.scannerType === "momentum") return 2;
-  return 1;
 }
 
 function formatCurrency(value?: number) {
   if (value == null || Number.isNaN(value)) return "NA";
-  return `₹${value.toFixed(2)}`;
+  return `Rs ${value.toFixed(2)}`;
 }
 
 function formatPercent(value?: number) {
   if (value == null || Number.isNaN(value)) return "NA";
   return `${value >= 0 ? "+" : ""}${value.toFixed(1)}%`;
-}
-
-function appearanceLabel(signal: ScannerSignal) {
-  if (signal.scannerType === "pre-breakout") return "Appeared in pre-breakout scanner";
-  if (signal.scannerType === "breakout") return "Moved into breakout scanner";
-  if (signal.scannerType === "momentum") return "Flagged as momentum leader";
-  return "Flagged on bearish risk scanner";
-}
-
-function buildTimeline(signals: ScannerSignal[], latestPrice: number) {
-  return [...signals]
-    .sort((left, right) => {
-      const dateDiff =
-        new Date(left.signalDate).getTime() - new Date(right.signalDate).getTime();
-      if (dateDiff !== 0) return dateDiff;
-      return signalPriority(left) - signalPriority(right);
-    })
-    .map((signal) => ({
-      id: signal.id,
-      date: signal.signalDate,
-      title: appearanceLabel(signal),
-      setupType: signal.setupType,
-      priceThen: signal.price,
-      movePct: signal.price ? ((latestPrice - signal.price) / signal.price) * 100 : 0,
-    }));
-}
-
-function metricNumber(value: ScannerSignal["metrics"][string]) {
-  return typeof value === "number" ? value : null;
 }
 
 export default async function StockDetailPage({
@@ -96,12 +59,20 @@ export default async function StockDetailPage({
     getMomentumScanner(),
   ]);
 
-  const { stock, signals, proof, candles } = detail;
-  const latest = candles[candles.length - 1];
-  const latestSignal =
-    [...signals].sort((left, right) => signalPriority(right) - signalPriority(left))[0] ?? null;
+  const {
+    stock,
+    signals,
+    proof,
+    candles,
+    overview,
+    latestSignal,
+    chartLevels,
+    insightCards,
+    stageTimeline,
+    proofSnapshot,
+    referenceTexts,
+  } = detail;
 
-  const timeline = buildTimeline(signals, latest.close);
   const allRows = [
     ...preBreakout.rows,
     ...breakouts.rows,
@@ -119,17 +90,12 @@ export default async function StockDetailPage({
     .sort((left, right) => right.score - left.score)
     .slice(0, 8);
 
-  const latestProof = [...proof].sort(
-    (left, right) =>
-      new Date(right.firstSeenDate).getTime() - new Date(left.firstSeenDate).getTime()
-  )[0] as ProofRecord | undefined;
-
   return (
     <main>
       <PageHero
         eyebrow="Stock detail"
         title={symbol}
-        subtitle={`${stock.companyName}. Review scanner status, chart levels, timeline transitions, proof history, and same-sector context in one place.`}
+        subtitle={`${stock.companyName}. Review scanner status, chart levels, shortlist evidence, proof history, and same-sector context in one place.`}
       />
       <section className="container py-8">
         <ImportantDisclaimer />
@@ -142,19 +108,18 @@ export default async function StockDetailPage({
               <h2 className="text-3xl font-black text-white">{symbol}</h2>
               <p className="mt-1 text-sm text-slate-400">{stock.companyName}</p>
               <p className="mt-4 max-w-3xl text-sm leading-7 text-slate-300">
-                Latest scanner signal, chart levels, evidence tags, and progression
-                timeline for {symbol}. Research software only, not investment advice.
+                {overview.shortlistNarrative}
               </p>
               <div className="mt-4 flex flex-wrap gap-2">
                 <span className="rounded-full border border-cyan-400/30 bg-cyan-400/10 px-3 py-1 text-xs font-semibold text-cyan-100">
-                  {stock.sector}
+                  {overview.sector}
                 </span>
                 <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-semibold text-slate-200">
-                  {stock.marketCapBucket}
+                  {overview.marketCapBucket}
                 </span>
-                {latestSignal ? (
+                {overview.setupType ? (
                   <span className="rounded-full border border-emerald-400/30 bg-emerald-400/10 px-3 py-1 text-xs font-semibold text-emerald-100">
-                    {latestSignal.setupType}
+                    {overview.setupType}
                   </span>
                 ) : null}
               </div>
@@ -162,23 +127,13 @@ export default async function StockDetailPage({
 
             <div className="min-w-[240px] rounded-3xl border border-white/10 bg-slate-950/70 p-5">
               <p className="text-xs uppercase tracking-[0.2em] text-slate-500">Latest status</p>
-              <p className="mt-2 text-2xl font-black text-white">
-                {latestSignal?.scannerType === "breakout"
-                  ? "Breakout"
-                  : latestSignal?.scannerType === "pre-breakout"
-                    ? "Pre-Breakout"
-                    : latestSignal?.scannerType === "momentum"
-                      ? "Momentum"
-                      : latestSignal?.scannerType === "breakdown"
-                        ? "Breakdown Risk"
-                        : "Observed"}
-              </p>
+              <p className="mt-2 text-2xl font-black text-white">{overview.statusLabel}</p>
               <div className="mt-3 flex items-center gap-3">
                 {latestSignal ? <ScoreBadge score={latestSignal.score} /> : null}
                 {latestSignal ? <RiskBadge tier={latestSignal.riskTier} /> : null}
               </div>
               <p className="mt-3 text-xs text-slate-400">
-                Scan date {latestSignal?.signalDate ?? latest.date}
+                Scan date {overview.scanDate ?? "NA"}
               </p>
             </div>
           </div>
@@ -187,10 +142,10 @@ export default async function StockDetailPage({
 
       <section className="container pb-6">
         <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-          <KpiCard label="Latest price" value={formatCurrency(latest.close)} tone="positive" />
-          <KpiCard label="Latest scanner score" value={latestSignal?.score ?? "NA"} />
-          <KpiCard label="Saved appearances" value={signals.length} />
-          <KpiCard label="Proof records" value={proof.length} />
+          <KpiCard label="Latest price" value={formatCurrency(overview.latestPrice)} tone="positive" />
+          <KpiCard label="Latest scanner score" value={overview.latestScore ?? "NA"} />
+          <KpiCard label="Saved appearances" value={overview.savedAppearances} />
+          <KpiCard label="Proof records" value={overview.proofCount} />
         </div>
       </section>
 
@@ -198,8 +153,8 @@ export default async function StockDetailPage({
         <div className="rounded-3xl border border-white/10 bg-white/5 p-5">
           <h2 className="text-xl font-semibold text-white">Scanner Stage Timeline</h2>
           <div className="mt-4 grid gap-3 md:grid-cols-2">
-            {timeline.length ? (
-              timeline.map((item) => (
+            {stageTimeline.length ? (
+              stageTimeline.map((item) => (
                 <div key={item.id} className="rounded-2xl border border-white/10 bg-slate-950/70 p-4">
                   <div className="flex items-start justify-between gap-3">
                     <div>
@@ -230,7 +185,7 @@ export default async function StockDetailPage({
           <div className="mb-4 flex items-center justify-between gap-3">
             <div>
               <h2 className="text-xl font-semibold text-white">Daily Chart</h2>
-              <p className="text-xs text-slate-500">Scanner reference levels and recent daily structure.</p>
+              <p className="text-xs text-slate-500">{overview.chartNote}</p>
             </div>
           </div>
           <CandlestickChart
@@ -244,21 +199,15 @@ export default async function StockDetailPage({
 
         <div className="space-y-4">
           <div className="rounded-3xl border border-white/10 bg-white/5 p-5">
-            <p className="text-xs uppercase tracking-[0.2em] text-slate-500">Signal metrics</p>
+            <p className="text-xs uppercase tracking-[0.2em] text-slate-500">Signal lens</p>
             <div className="mt-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-1">
-              <KpiCard label="RSI" value={String(latestSignal?.metrics.rsi ?? "NA")} />
-              <KpiCard label="ADX" value={String(latestSignal?.metrics.adx ?? "NA")} />
-              <KpiCard label="RS Rank" value={String(latestSignal?.metrics.rsRank ?? "NA")} />
-              <KpiCard
-                label="Volume ratio / quality"
-                value={String(
-                  latestSignal?.metrics.volumeRatio ??
-                    latestSignal?.metrics.volumeQuality ??
-                    "NA"
-                )}
-              />
-              <KpiCard label="ATR" value={String(latestSignal?.metrics.atr ?? "NA")} />
-              <KpiCard label="From pivot" value={String(latestSignal?.metrics.fromPivot ?? "NA")} />
+              {insightCards.map((card) => (
+                <div key={card.id} className="rounded-2xl border border-white/10 bg-slate-950/70 p-4">
+                  <p className="text-xs uppercase tracking-[0.2em] text-slate-500">{card.label}</p>
+                  <p className="mt-2 text-lg font-semibold text-white">{card.value}</p>
+                  <p className="mt-2 text-xs leading-5 text-slate-400">{card.description}</p>
+                </div>
+              ))}
             </div>
           </div>
 
@@ -269,18 +218,36 @@ export default async function StockDetailPage({
                 <EvidenceChecklist rules={latestSignal.evidenceRules} />
               </div>
               <div className="mt-4 rounded-2xl border border-white/10 bg-slate-950/70 p-4">
-                <p className="text-sm leading-6 text-slate-300">{latestSignal.notes}</p>
+                <p className="text-sm leading-6 text-slate-300">{referenceTexts.scannerSummary}</p>
               </div>
             </div>
           ) : null}
 
           <div className="rounded-3xl border border-white/10 bg-white/5 p-5">
+            <p className="text-xs uppercase tracking-[0.2em] text-slate-500">Reference levels</p>
+            <div className="mt-4 grid gap-3">
+              {chartLevels.map((level) => (
+                <div key={level.id} className="rounded-2xl border border-white/10 bg-slate-950/70 p-4">
+                  <div className="flex items-center justify-between gap-3">
+                    <p className="font-medium text-white">{level.label}</p>
+                    <p className="text-sm font-semibold text-slate-200">{formatCurrency(level.value)}</p>
+                  </div>
+                  <p className="mt-2 text-xs leading-5 text-slate-400">{level.description}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="rounded-3xl border border-white/10 bg-white/5 p-5">
             <p className="text-xs uppercase tracking-[0.2em] text-slate-500">Outcome snapshot</p>
             <div className="mt-4 space-y-2 text-sm text-slate-300">
-              <p>Latest proof status: <span className="font-semibold text-white">{latestProof?.status ?? "No proof record yet"}</span></p>
-              <p>Entry reference: <span className="font-semibold text-white">{latestProof ? formatCurrency(latestProof.entryReference) : "NA"}</span></p>
-              <p>Current / exit price: <span className="font-semibold text-white">{latestProof ? formatCurrency(latestProof.currentPrice) : "NA"}</span></p>
-              <p>Return since first record: <span className="font-semibold text-white">{latestProof ? formatPercent(latestProof.returnPct) : "NA"}</span></p>
+              <p>Latest proof status: <span className="font-semibold text-white">{proofSnapshot?.status ?? "No proof record yet"}</span></p>
+              <p>Entry reference: <span className="font-semibold text-white">{proofSnapshot ? formatCurrency(proofSnapshot.entryReference) : "NA"}</span></p>
+              <p>Current / exit price: <span className="font-semibold text-white">{proofSnapshot ? formatCurrency(proofSnapshot.currentPrice) : "NA"}</span></p>
+              <p>Return since first record: <span className="font-semibold text-white">{proofSnapshot ? formatPercent(proofSnapshot.returnPct) : "NA"}</span></p>
+              {proofSnapshot ? (
+                <p className="text-xs leading-5 text-slate-500">{proofSnapshot.note}</p>
+              ) : null}
             </div>
           </div>
         </div>

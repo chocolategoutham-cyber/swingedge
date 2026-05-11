@@ -7,6 +7,11 @@ import type {
   ScannerSignal,
   ScanEngineSummary,
   Stock,
+  StockChartLevel,
+  StockInsightCard,
+  StockOverview,
+  StockProofSnapshot,
+  StockStageEvent,
 } from "@/lib/types";
 
 const API_BASE =
@@ -75,6 +80,16 @@ export type StockDetailApiResponse = {
   candles: DailyCandle[];
   signals: ScannerSignal[];
   proof: ProofRecord[];
+  overview: StockOverview;
+  latestSignal: ScannerSignal | null;
+  chartLevels: StockChartLevel[];
+  insightCards: StockInsightCard[];
+  stageTimeline: StockStageEvent[];
+  proofSnapshot: StockProofSnapshot | null;
+  referenceTexts: {
+    scannerSummary: string;
+    chartSummary: string;
+  };
 };
 
 export function getMeta() {

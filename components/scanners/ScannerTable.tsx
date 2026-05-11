@@ -9,8 +9,8 @@ import {
   type SortingState,
   useReactTable,
 } from "@tanstack/react-table";
-import type { DailyCandle, ScannerSignal } from "@/lib/types";
-import { publicApiBase } from "@/lib/api";
+import type { ScannerSignal } from "@/lib/types";
+import { publicApiBase, type StockDetailApiResponse } from "@/lib/api";
 import ScoreBadge from "@/components/common/ScoreBadge";
 import RiskBadge from "@/components/common/RiskBadge";
 import StockAnalyzeDrawer from "@/components/scanners/StockAnalyzeDrawer";
@@ -24,20 +24,20 @@ export default function ScannerTable({
 }) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [selected, setSelected] = useState<ScannerSignal | null>(null);
-  const [selectedCandles, setSelectedCandles] = useState<DailyCandle[]>([]);
+  const [selectedDetail, setSelectedDetail] = useState<StockDetailApiResponse | null>(null);
 
   async function handleAnalyze(signal: ScannerSignal) {
     setSelected(signal);
     try {
       const response = await fetch(`${publicApiBase}/api/stocks/${signal.symbol}`);
       if (!response.ok) {
-        setSelectedCandles([]);
+        setSelectedDetail(null);
         return;
       }
-      const payload = await response.json();
-      setSelectedCandles(payload.candles ?? []);
+      const payload = (await response.json()) as StockDetailApiResponse;
+      setSelectedDetail(payload);
     } catch {
-      setSelectedCandles([]);
+      setSelectedDetail(null);
     }
   }
 
@@ -170,12 +170,46 @@ export default function ScannerTable({
         </p>
       </div>
       <StockAnalyzeDrawer
-        signal={selected}
-        candles={selectedCandles}
+        detail={selectedDetail ?? (selected ? {
+          stock: {
+            symbol: selected.symbol,
+            companyName: selected.companyName,
+            sector: selected.sector,
+            marketCapBucket: selected.marketCapBucket,
+            exchange: "NSE",
+          },
+          candles: [],
+          signals: [selected],
+          proof: [],
+          overview: {
+            statusLabel: selected.scannerType,
+            signalStrength: selected.signalLabel,
+            setupType: selected.setupType,
+            scanDate: selected.signalDate,
+            latestPrice: selected.price,
+            latestScore: selected.score,
+            savedAppearances: 1,
+            proofCount: 0,
+            sector: selected.sector,
+            marketCapBucket: selected.marketCapBucket,
+            lastUpdated: selected.updatedAt,
+            chartNote: "",
+            shortlistNarrative: selected.notes,
+          },
+          latestSignal: selected,
+          chartLevels: [],
+          insightCards: [],
+          stageTimeline: [],
+          proofSnapshot: null,
+          referenceTexts: {
+            scannerSummary: selected.notes,
+            chartSummary: "Loading chart context.",
+          },
+        } : null)}
         open={Boolean(selected)}
         onClose={() => {
           setSelected(null);
-          setSelectedCandles([]);
+          setSelectedDetail(null);
         }}
       />
     </>

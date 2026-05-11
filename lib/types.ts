@@ -214,6 +214,59 @@ export const marketInsightsSchema = z.object({
   sectors: z.array(sectorSnapshotSchema),
 });
 
+export const stockChartLevelSchema = z.object({
+  id: z.string(),
+  label: z.string(),
+  value: z.number(),
+  tone: z.enum(["info", "positive", "warning", "danger", "neutral"]),
+  description: z.string(),
+});
+
+export const stockInsightCardSchema = z.object({
+  id: z.string(),
+  label: z.string(),
+  value: z.string(),
+  description: z.string(),
+  tone: z.enum(["info", "positive", "warning", "danger", "neutral"]),
+});
+
+export const stockStageEventSchema = z.object({
+  id: z.string(),
+  date: z.string(),
+  title: z.string(),
+  scannerType: scannerTypeSchema,
+  setupType: z.string(),
+  signalLabel: signalStrengthSchema,
+  score: z.number(),
+  priceThen: z.number(),
+  movePct: z.number(),
+});
+
+export const stockProofSnapshotSchema = z.object({
+  status: proofStatusSchema,
+  entryReference: z.number(),
+  currentPrice: z.number(),
+  returnPct: z.number(),
+  holdingDays: z.number(),
+  note: z.string(),
+});
+
+export const stockOverviewSchema = z.object({
+  statusLabel: z.string(),
+  signalStrength: signalStrengthSchema.nullable(),
+  setupType: z.string().nullable(),
+  scanDate: z.string().nullable(),
+  latestPrice: z.number(),
+  latestScore: z.number().nullable(),
+  savedAppearances: z.number(),
+  proofCount: z.number(),
+  sector: z.string(),
+  marketCapBucket: marketCapBucketSchema,
+  lastUpdated: z.string(),
+  chartNote: z.string(),
+  shortlistNarrative: z.string(),
+});
+
 export const stockDetailSnapshotSchema = z.object({
   symbol: z.string(),
   companyName: z.string(),
@@ -282,6 +335,11 @@ export type ProofRecord = z.infer<typeof proofRecordSchema>;
 export type NiftyContext = z.infer<typeof niftyContextSchema>;
 export type SectorSnapshot = z.infer<typeof sectorSnapshotSchema>;
 export type MarketInsights = z.infer<typeof marketInsightsSchema>;
+export type StockChartLevel = z.infer<typeof stockChartLevelSchema>;
+export type StockInsightCard = z.infer<typeof stockInsightCardSchema>;
+export type StockStageEvent = z.infer<typeof stockStageEventSchema>;
+export type StockProofSnapshot = z.infer<typeof stockProofSnapshotSchema>;
+export type StockOverview = z.infer<typeof stockOverviewSchema>;
 export type StockDetailSnapshot = z.infer<typeof stockDetailSnapshotSchema>;
 export type MarketUniverseProfile = z.infer<typeof marketUniverseProfileSchema>;
 export type MethodologyOverview = z.infer<typeof methodologyOverviewSchema>;

@@ -13,6 +13,16 @@ export default function CandlestickChart({
   target1?: number;
   target2?: number;
 }) {
+  if (!candles.length) {
+    return (
+      <div className="rounded-2xl border border-white/10 bg-slate-950 p-6">
+        <div className="flex h-[220px] items-center justify-center rounded-2xl border border-dashed border-white/10 bg-slate-950/60">
+          <p className="text-sm text-slate-400">No chart candles are available for this symbol yet.</p>
+        </div>
+      </div>
+    );
+  }
+
   const recent = candles.slice(-24);
   const max = Math.max(...recent.map((candle) => candle.high), pivot ?? 0, target1 ?? 0, target2 ?? 0);
   const min = Math.min(...recent.map((candle) => candle.low), support ?? recent[0]?.low ?? 0);
