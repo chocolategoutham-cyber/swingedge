@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { cn } from "@/lib/utils/format";
 
 const navItems = [
@@ -14,7 +14,16 @@ const navItems = [
 
 export default function SiteHeader() {
   const pathname = usePathname();
+  const router = useRouter();
   const [open, setOpen] = useState(false);
+  const [searchSymbol, setSearchSymbol] = useState("");
+
+  function submitSymbolSearch() {
+    const normalized = searchSymbol.trim().toUpperCase();
+    if (!normalized) return;
+    router.push(`/stocks/${normalized}`);
+    setOpen(false);
+  }
 
   return (
     <header className="sticky top-0 z-50 border-b border-white/10 bg-slate-950/90 backdrop-blur-xl">
@@ -48,13 +57,24 @@ export default function SiteHeader() {
           </nav>
         </div>
 
-        <div className="hidden md:block">
-          <Link
-            href="/stocks/INFONEXT"
+        <div className="hidden items-center gap-2 md:flex">
+          <input
+            value={searchSymbol}
+            onChange={(event) => setSearchSymbol(event.target.value)}
+            onKeyDown={(event) => {
+              if (event.key === "Enter") submitSymbolSearch();
+            }}
+            placeholder="Search NSE stock"
+            className="w-44 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm text-white placeholder:text-slate-500"
+            aria-label="Search NSE stock by symbol"
+          />
+          <button
+            type="button"
+            onClick={submitSymbolSearch}
             className="rounded-full border border-cyan-500/30 bg-cyan-500/10 px-4 py-2 text-sm text-cyan-100 transition hover:bg-cyan-500/20"
           >
-            Search NSE stock
-          </Link>
+            Open
+          </button>
         </div>
 
         <button
@@ -75,9 +95,30 @@ export default function SiteHeader() {
                 {item.label}
               </Link>
             ))}
-            <Link href="/stocks/INFONEXT" className="rounded-xl bg-cyan-500/10 px-4 py-3 text-sm text-cyan-100">
-              Search NSE stock
-            </Link>
+            <div className="rounded-xl bg-white/5 p-3">
+              <label className="block text-xs uppercase tracking-[0.2em] text-slate-500">
+                Search NSE stock
+              </label>
+              <div className="mt-3 flex gap-2">
+                <input
+                  value={searchSymbol}
+                  onChange={(event) => setSearchSymbol(event.target.value)}
+                  onKeyDown={(event) => {
+                    if (event.key === "Enter") submitSymbolSearch();
+                  }}
+                  placeholder="Type symbol"
+                  className="min-w-0 flex-1 rounded-xl border border-white/10 bg-slate-950 px-3 py-2 text-sm text-white placeholder:text-slate-500"
+                  aria-label="Search NSE stock by symbol"
+                />
+                <button
+                  type="button"
+                  onClick={submitSymbolSearch}
+                  className="rounded-xl bg-cyan-500/10 px-4 py-2 text-sm text-cyan-100"
+                >
+                  Open
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       ) : null}

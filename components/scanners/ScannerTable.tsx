@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useMemo, useState } from "react";
 import {
   flexRender,
@@ -43,8 +44,30 @@ export default function ScannerTable({
 
   const columns = useMemo<ColumnDef<ScannerSignal>[]>(
     () => [
-      { accessorKey: "symbol", header: "Symbol" },
-      { accessorKey: "companyName", header: "Company" },
+      {
+        accessorKey: "symbol",
+        header: "Symbol",
+        cell: ({ row }) => (
+          <Link
+            href={`/stocks/${row.original.symbol}`}
+            className="font-semibold text-cyan-200 hover:text-cyan-100"
+          >
+            {row.original.symbol}
+          </Link>
+        ),
+      },
+      {
+        accessorKey: "companyName",
+        header: "Company",
+        cell: ({ row }) => (
+          <Link
+            href={`/stocks/${row.original.symbol}`}
+            className="text-slate-200 hover:text-white"
+          >
+            {row.original.companyName}
+          </Link>
+        ),
+      },
       {
         id: "analyze",
         header: "Analyze",
